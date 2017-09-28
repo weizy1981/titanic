@@ -13,9 +13,11 @@ y = array[:, 0].astype(int)
 
 scaler = StandardScaler().fit(X)
 X = scaler.transform(X)
+#print(X)
 
 model = create_MLP_()
-model.fit(X, y, epochs=100, batch_size=5, verbose=1)
+#model.fit(X, y, epochs=100, batch_size=5, verbose=1)
+model.fit(X, y, epochs=300, batch_size=20, verbose=1)
 
 result = model.evaluate(X, y)
 print('\n')
@@ -23,8 +25,8 @@ print('%s: %.2f%%' % ('acc', result[1] * 100))
 
 # 预测结果
 predict_X, predict_passengerId = get_data(filename='data/test.csv')
-#predict_y = model.predict_classes(StandardScaler().fit_transform(predict_X))
-predict_y = model.predict_classes(scaler.transform(predict_X))
+predict_y = model.predict_classes(StandardScaler().fit_transform(predict_X))
+#predict_y = model.predict_classes(scaler.transform(predict_X))
 
 # 生成预测文件
 with open('data/result.csv', 'w') as file:

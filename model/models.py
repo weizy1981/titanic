@@ -9,7 +9,7 @@ from sklearn.svm import SVC
 from keras.models import Sequential
 from keras.layers import Dense, Dropout
 from keras.wrappers.scikit_learn import KerasClassifier
-from keras.optimizers import SGD, Adam, Adamax
+from keras.optimizers import SGD, Adam
 from keras import regularizers
 from keras.constraints import max_norm
 from keras.initializers import RandomNormal
@@ -49,20 +49,39 @@ def create_AB():
     return model
 
 def create_MLP_():
-    #randomNormal = RandomNormal(mean=0.5, stddev=0.1, seed=None)
+    return create_MLP_1()
+
+def create_MLP_1():
+    #88.44%
+    init = 'normal'
+    lr = 0.2
+    decay = 0.001
+    momentum = 0.9
+
+    model = Sequential()
+    model.add(Dense(units=27, activation='relu', input_dim=9, kernel_initializer=init))
+    model.add(Dense(units=1, activation='sigmoid', kernel_initializer=init))
+
+    optimizer = SGD(lr=lr, decay=decay, momentum=momentum)
+    model.compile(loss='binary_crossentropy', optimizer=optimizer, metrics=['accuracy'])
+    return model
+
+def create_MLP_base():
+    # 84.85%
     init = 'normal'
     lr = 0.1
     decay = 0.01
     momentum = 0.9
 
     model = Sequential()
-    model.add(Dense(units=27, input_dim=9, kernel_initializer=init))
-    model.add(LeakyReLU(alpha=0.2))
-    #model.add(Activation('relu'))
+    model.add(Dense(units=27, activation='relu', input_dim=9, kernel_initializer=init))
+    # model.add(LeakyReLU(alpha=0.2))
+    # model.add(Activation('relu'))
     model.add(Dense(units=1, activation='sigmoid', kernel_initializer=init))
 
     optimizer = SGD(lr=lr, decay=decay, momentum=momentum)
     model.compile(loss='binary_crossentropy', optimizer=optimizer, metrics=['accuracy'])
+    #model.fit(X, y, epochs=100, batch_size=5, verbose=1)
     return model
 
 

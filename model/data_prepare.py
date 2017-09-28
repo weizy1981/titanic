@@ -50,10 +50,11 @@ def get_data(filename):
     data['Ticket'] = data['Ticket'].apply(lambda x: '0' if x=='LINE' else x)
 
     data['Cabin'] = data['Cabin'].fillna(0)
-    data['Cabin'] = data['Cabin'].apply(exhange)
+    #data['Cabin'] = data['Cabin'].apply(exhange)
+    data['Cabin'] = data['Cabin'].apply(lambda x: 0 if x==0 else 1)
 
-    fare_average = round(data['Fare'].sum() / data['Fare'].size)
-    data['Fare'] = data['Fare'].fillna(fare_average)
+    #fare_average = round(data['Fare'].sum() / data['Fare'].size)
+    data['Fare'] = data['Fare'].fillna(0)
 
     #print(data.isnull())
 
