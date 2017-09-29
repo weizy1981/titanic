@@ -51,19 +51,35 @@ def create_AB():
 def create_MLP_():
     return create_MLP_1()
 
-def create_MLP_1():
-    #88.44%
+def create_MLP_2():
+    #90.01%
     init = 'normal'
     lr = 0.2
     decay = 0.001
     momentum = 0.9
 
     model = Sequential()
-    model.add(Dense(units=27, activation='relu', input_dim=9, kernel_initializer=init))
+    model.add(Dense(units=48, activation='relu', input_dim=8, kernel_initializer=init))
     model.add(Dense(units=1, activation='sigmoid', kernel_initializer=init))
 
     optimizer = SGD(lr=lr, decay=decay, momentum=momentum)
     model.compile(loss='binary_crossentropy', optimizer=optimizer, metrics=['accuracy'])
+    return model
+
+def create_MLP_1():
+    #88.44%
+    init = 'normal'
+    lr = 0.1
+    decay = 0.001
+    momentum = 0.9
+
+    model = Sequential()
+    model.add(Dense(units=10, activation='relu', input_dim=10, kernel_initializer=init))
+    model.add(Dense(units=5, activation='relu', kernel_initializer=init))
+    model.add(Dense(units=1, activation='sigmoid', kernel_initializer=init))
+
+    optimizer = SGD(lr=lr, decay=decay, momentum=momentum)
+    model.compile(loss='binary_crossentropy', optimizer='adam', metrics=['accuracy'])
     return model
 
 def create_MLP_base():
@@ -85,6 +101,6 @@ def create_MLP_base():
     return model
 
 
-def create_MLP():
-    model = KerasClassifier(build_fn=create_MLP_, epochs=100, batch_size=5, verbose=0)
+def create_MLP(epochs=100, batch_size=5):
+    model = KerasClassifier(build_fn=create_MLP_, epochs=epochs, batch_size=batch_size, verbose=1)
     return model
