@@ -1,8 +1,8 @@
-from model.data_prepare import get_data
+from model2.data_prepare import get_data
 from sklearn.preprocessing import StandardScaler, Normalizer
-from model.models import create_MLP_, create_MLP
+from model2.models import create_MLP_, create_MLP
 import numpy as np
-from model.validation_fold import validation_model
+from model2.validation_fold import validation_model
 
 np.random.seed(seed=7)
 

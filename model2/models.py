@@ -74,7 +74,7 @@ def create_MLP_1():
     momentum = 0.9
 
     model = Sequential()
-    model.add(Dense(units=10, activation='relu', input_dim=10, kernel_initializer=init))
+    model.add(Dense(units=9, activation='relu', input_dim=9, kernel_initializer=init))
     model.add(Dense(units=5, activation='relu', kernel_initializer=init))
     model.add(Dense(units=1, activation='sigmoid', kernel_initializer=init))
 

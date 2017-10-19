@@ -1,11 +1,11 @@
-from model.data_prepare import get_data
+from model2.data_prepare import get_data
 from sklearn.preprocessing import StandardScaler
 import pandas as pd
-from model.models import create_LR, create_CART, create_KNN, create_LDA, create_AB, create_RF, create_SVM, create_GB, create_MLP
-from model.validation_fold import validation_model
-from model.feature_selection import select_feature
+from model2.models import create_LR, create_CART, create_KNN, create_LDA, create_AB, create_RF, create_SVM, create_GB, create_MLP
+from model2.validation_fold import validation_model
+from model2.feature_selection import select_feature
 import numpy as np
-from model.turn_model import turn_RF, turn_MLP
+from model2.turn_model import turn_RF, turn_MLP
 
 np.random.seed(seed=7)
 
