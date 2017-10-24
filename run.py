@@ -1,77 +1,53 @@
-from model2.data_prepare import get_data
-from sklearn.preprocessing import StandardScaler
-import pandas as pd
-from model2.models import create_LR, create_CART, create_KNN, create_LDA, create_AB, create_RF, create_SVM, create_GB, create_MLP
-from model2.validation_fold import validation_model
-from model2.feature_selection import select_feature
-import numpy as np
-from model2.turn_model import turn_RF, turn_MLP
+from preprocessing.data_init import get_data, splitx_y
+from keras.utils.np_utils import to_categorical
+from preprocessing.one_hot_encode import one_hot_encodeX
+from keras.models import Sequential
+from keras.layers.core import Dense
+from keras.optimizers import SGD
 
-np.random.seed(seed=7)
+init = 'normal'
+lr = 0.1
+decay = 0.001
+momentum = 0.9
+batch_size = 5
+epochs = 200
 
-#pd.set_option('display.height', 1000)
+def build_model():
+    model = Sequential()
+    model.add(Dense(units=45, activation='relu', input_dim=45, kernel_initializer=init))
+    model.add(Dense(units=90, activation='relu', kernel_initializer=init))
+    model.add(Dense(units=1, activation='sigmoid', kernel_initializer=init))
 
-training_dataset, names = get_data(filename='data/titanic_train.csv')
+    optimizer = SGD(lr=lr, decay=decay, momentum=momentum)
+    model.compile(loss='binary_crossentropy', optimizer='adam', metrics=['accuracy'])
+    return model
 
-print(training_dataset.groupby('Survived').size())
+if __name__ == '__main__':
+    training_dataset, passengerId = get_data(filename='data/titanic_train.csv')
 
-array = training_dataset.values
-#print(array.shape)
-X = array[:, 1:].astype(float)
-y = array[:, 0].astype(float)
+    x, y = splitx_y(training_dataset)
 
-X = StandardScaler().fit_transform(X)
+    # one-hot
+    x = one_hot_encodeX(x)
+    # y = to_categorical(y)
 
-#model = create_MLP()
-#turn_MLP(model, X, y)
-#validation_model(model, X, y)
+    model = build_model()
+    model.fit(x, y, batch_size=batch_size, epochs=epochs, verbose=0)
 
-#print(X.shape)
 
-#model = create_LR()
-#validation_model(model, X, y)
+    # 预测结果
+    predict_X, predict_passengerId = get_data(filename='data/test.csv')
+    predict_X = one_hot_encodeX(predict_X)
+    predict_y = model.predict_classes(predict_X)
+    #predict_y = model.predict_classes(scaler.transform(predict_X))
 
-#model = create_LDA()
-#validation_model(model, X, y)
+    # 生成预测文件
+    with open('data/result.csv', 'w') as file:
+        lines = []
+        lines.append('PassengerId,Survived\n')
+        for passengerId, predict in zip(predict_passengerId.values, predict_y.astype(int)):
+            predict = str(predict).replace('[', '').replace(']', '')
+            s = (str(passengerId) + ',' + str(predict) + '\n')
+            lines.append(s)
 
-#model = create_KNN()
-#validation_model(model, X, y)
-
-#model = create_CART()
-#validation_model(model, X, y)
-
-#model = create_GB()
-#validation_model(model, X, y)
-
-#model = create_SVM()
-#validation_model(model, X, y)
-
-#model = create_AB()
-#validation_model(model, X, y)
-
-#model = create_RF()
-#validation_model(model, X, y)
-
-# 特征选择
-#select_feature(X, y)
-# [ 0.06486463  0.25325018  0.17271201  0.04292124  0.02638373  0.19974153 0.20668297  0.01068576  0.02275796]
-#print(training_dataset.keys())
-#del(training_dataset['Embarked'])
-#del(training_dataset['Cabin'])
-#del(training_dataset['Parch'])
-#del(training_dataset['SibSp'])
-#del(training_dataset['SibSp'])
-#del(training_dataset['Pclass'])
-#print(training_dataset)
-
-#array = training_dataset.values
-#y = array[:, 0].astype(float)
-#X = array[:, 1:].astype(float)
-#X = StandardScaler().fit_transform(X)
-# print(X.shape)
-
-model = create_RF()
-#turn_RF(model, X, y)
-validation_model(model, X, y)
-
-#print(X)
+        file.writelines(lines)
